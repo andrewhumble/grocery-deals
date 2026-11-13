@@ -1,0 +1,10 @@
+node_modules/
+.next/
+*.tsbuildinfo
+data/publix/*/archive/
+data/pantry-signal.sqlite*
+.vercel
+.env*
+.DS_Store
+data/*.sqlite*
+data/profile.json

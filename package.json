@@ -1,0 +1,41 @@
+{
+  "name": "grocery-deals",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "agent:serve": "next dev",
+    "lint": "tsc --noEmit",
+    "refresh:publix": "node scripts/fetch-publix.mjs",
+    "refresh:costco": "node costco/fetch-weekly-deals.mjs",
+    "refresh:wholefoods": "node wholefoods/fetch-weekly-deals.mjs",
+    "refresh:all": "node scripts/refresh-all.mjs",
+    "index:build": "node --conditions=react-server --import tsx scripts/build-deal-index.ts",
+    "test": "node --conditions=react-server --import tsx --test tests/retrieval.test.ts",
+    "schedule:daily": "node scripts/install-daily-refresh.mjs"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.2",
+    "better-sqlite3": "^11.10.0",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "tsx": "^4.23.13",
+    "typescript": "5.9.3"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}
