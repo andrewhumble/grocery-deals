@@ -42,7 +42,7 @@ test("food matching excludes pet food and generic nonfood rolls", async () => {
   const make = (id: string, title: string, category: string) => ({ ...base, id, title, category, department: category, sourceCategories: [category] });
   const offers = [make("salmon", "Fresh Salmon Fillets", "Seafood"), make("cat", "Salmon Cat Food", "Pets"),
     make("paper", "Paper Towels Rolls", "Household"), make("rollon", "Roll-On Deodorant", "Health & personal care"),
-    make("dogs", "Hot Dogs", "Meat & poultry"), make("buns", "Hot Dog Buns", "Bakery"), make("rolls", "Bakery Rolls", "Bakery")];
+    make("garlic", "Garlic Knots Rolls", "Bakery"), make("dogs", "Hot Dogs", "Meat & poultry"), make("buns", "Hot Dog Buns", "Bakery"), make("rolls", "Bakery Rolls", "Bakery")];
   assert.deepEqual(matchDealOffers("salmon", offers, "exact", now).matches.map(m => m.ref), ["salmon"]);
   assert.deepEqual(matchDealOffers("hot dog buns", offers, "exact", now).matches.map(m => m.ref), ["buns", "rolls"]);
 });

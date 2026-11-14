@@ -53,7 +53,7 @@ export function matchDealOffers(item: string, offers: Offer[], scope: SearchScop
     else if (modifiers.every(t => words.includes(t))) {
       const label = labelWords.find(label => phrase(words, label));
       if (label) { tier = "concept_label"; matchedTerms = label; }
-      else if (ids.includes("hot_dog_bun") && offer.category === "Bakery" && !/\broll[ -]on\b/i.test(name) && concepts.bun.labels.some(l => phrase(words, itemTokens(l))) && !words.some(w => ["hamburger", "burger", "slider", "dinner", "cinnamon", "sweet", "sandwich", "paper"].includes(w))) {
+      else if (ids.includes("hot_dog_bun") && offer.category === "Bakery" && !/\broll[ -]on\b/i.test(name) && concepts.bun.labels.some(l => phrase(words, itemTokens(l))) && !words.some(w => ["hamburger", "burger", "slider", "dinner", "cinnamon", "sweet", "sandwich", "paper", "garlic", "knot"].includes(w))) {
         tier = "concept_label";
         matchedTerms = words.filter(w => ["bun", "roll"].includes(w));
         warnings.push("Generic bun or roll offer: verify that hot dog varieties are eligible.");
