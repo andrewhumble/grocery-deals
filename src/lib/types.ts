@@ -70,6 +70,8 @@ export type Promotion = {
 };
 
 export type Offer = {
+  size?: string;
+  membership?: { program: string; price: number; memberOnly: true };
   id: string;
   retailer: Retailer;
   storeId: string;

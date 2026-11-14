@@ -3,42 +3,63 @@
     "labels": ["bread"],
     "parents": [],
     "substitutes": [],
-    "related": []
+    "related": [],
+    "domains": ["Bakery"]
   },
   "bun": {
     "labels": ["bun", "buns", "roll", "rolls"],
     "parents": ["bread"],
     "substitutes": ["brioche bun", "sandwich roll"],
-    "related": []
+    "related": [],
+    "domains": ["Bakery"]
   },
   "hot_dog_bun": {
     "labels": ["hot dog bun", "hot dog buns", "hotdog bun", "hotdog buns", "frankfurter bun", "frankfurter buns"],
     "parents": ["bun"],
     "substitutes": ["brioche bun", "sandwich roll"],
-    "related": ["hot_dog"]
+    "related": ["hot_dog"],
+    "domains": ["Bakery"]
   },
   "bagel": {
     "labels": ["bagel", "bagels"],
     "parents": ["bread"],
     "substitutes": [],
-    "related": []
+    "related": [],
+    "domains": ["Bakery"]
   },
   "hot_dog": {
     "labels": ["hot dog", "hot dogs", "hotdog", "hotdogs", "frankfurter", "frankfurters", "wiener", "wieners"],
     "parents": [],
     "substitutes": [],
-    "related": ["hot_dog_bun"]
+    "related": ["hot_dog_bun"],
+    "domains": ["Meat & poultry"]
   },
   "chicken": {
     "labels": ["chicken", "chickens"],
     "parents": ["meat"],
     "substitutes": [],
-    "related": []
+    "related": [],
+    "domains": ["Meat & poultry"]
   },
   "meat": {
     "labels": ["meat", "protein"],
     "parents": [],
     "substitutes": [],
-    "related": []
+    "related": [],
+    "domains": ["Meat & poultry"]
+  },
+  "egg": {
+    "labels": ["egg", "eggs"],
+    "parents": [],
+    "substitutes": [],
+    "related": [],
+    "domains": ["Dairy & eggs"]
+  },
+  "chicken_thighs": {
+    "labels": ["chicken thigh", "chicken thighs"],
+    "parents": ["chicken"],
+    "substitutes": [],
+    "related": [],
+    "domains": ["Meat & poultry"]
   }
 }

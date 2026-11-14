@@ -1,0 +1,27 @@
+{
+  "now": "2026-11-13T18:00:00.000Z",
+  "publix": {
+    "storeId": "719",
+    "retrievedAt": "2026-11-13T12:25:00Z",
+    "promotions": {
+      "Savings": [
+        { "id": "eggs", "title": "Farm &amp; Field® Eggs", "description": "Large white eggs, 12 ct; select varieties", "brand": "Farm &amp; Field™", "department": "Dairy", "savings": "Buy 1 Get 1 FREE", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "dye", "title": "Egg Dye", "department": "Household", "savings": "$2", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "condiment", "title": "Chili Crisp, Rice, Eggs &amp; More", "department": "Grocery", "savings": "$3", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "buns", "title": "Frankfurter Buns", "department": "Bakery", "savings": "Buy 1 Get 1 FREE", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "rolls", "title": "Bakery Rolls", "department": "Bakery", "savings": "$3", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "burger", "title": "Hamburger Buns", "department": "Bakery", "savings": "$3", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "bread", "title": "White Bread", "department": "Bakery", "savings": "$3", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" },
+        { "id": "dogs", "title": "Hot Dogs", "department": "Meat", "savings": "$3", "wa_startDate": "2026-11-12T00:00:00Z", "wa_endDate": "2026-11-19T23:59:59Z" }
+      ]
+    }
+  },
+  "costco": {
+    "retrievedAt": "2026-11-13T12:25:00Z",
+    "categories": [{ "category": "Grocery", "deals": [{ "productId": "coffee", "cardDescription": "Roasted Coffee®", "offerDetails": "Whole bean, 2 lb", "applicability": "warehouse_only", "offerTerms": "Selected varieties", "pricesOffCSObject": [{ "value": ["12.99"], "add_currency": true }] }] }]
+  },
+  "wholefoods": {
+    "retrievedAt": "2026-11-13T12:25:00Z",
+    "deals": [{ "asin": "egg1", "name": "Organic Eggs", "description": "Large brown eggs, 12 ct", "category": { "displayName": "Dairy" }, "offerDetails": { "price": { "priceAmount": 4, "basisPriceAmount": 5, "primeBenefit": { "priceAmount": 3.5 } } } }]
+  }
+}

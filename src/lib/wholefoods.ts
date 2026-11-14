@@ -78,6 +78,8 @@ export function normalizeWholeFoodsResponse(raw: WholeFoodsPayload): Offer[] {
       category: canonicalCategory(sourceCategory, [productType]),
       imageUrl: deal.productImages?.[0] ?? null,
       promotion,
+      membership: typeof deal.offerDetails?.price?.primeBenefit?.priceAmount === "number"
+        ? { program: "Prime", price: deal.offerDetails.price.primeBenefit.priceAmount, memberOnly: true as const } : undefined,
       advertisedSavingsText,
       finePrint: primeText,
       startsAt: raw.retrievedAt ?? null,

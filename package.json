@@ -16,12 +16,13 @@
     "refresh:wholefoods": "node wholefoods/fetch-weekly-deals.mjs",
     "refresh:all": "node scripts/refresh-all.mjs",
     "index:build": "node --conditions=react-server --import tsx scripts/build-deal-index.ts",
-    "test": "node --conditions=react-server --import tsx --test tests/retrieval.test.ts",
+    "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
     "schedule:daily": "node scripts/install-daily-refresh.mjs"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.2",
     "better-sqlite3": "^11.10.0",
+    "html-entities": "^2.6.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",

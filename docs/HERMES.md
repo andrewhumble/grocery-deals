@@ -57,3 +57,29 @@ An identical source, reference, and note body returns the existing snapshot rath
 Set `HERMES_SHARED_SECRET` on the Pantry Signal server to require `Authorization: Bearer <secret>` for every list endpoint. Without it, the endpoints are intended only for a local trusted network.
 
 List snapshots and match history are stored locally in `data/pantry-signal.sqlite`. The supplied grocery text is never sent to a model by this layer.
+
+## Public item deal checks
+
+`GET /api/deals/match?item=chicken%20thighs` checks active offers without authentication or a SQLite index. `scope` defaults to `exact`; `substitutes` adds configured alternatives and `related` also adds related concepts and qualifier-only mentions. Missing/blank items and unsupported scopes return HTTP 400. Results are not truncated.
+
+```sh
+curl 'https://grocery-deals-one.vercel.app/api/deals/match?item=eggs'
+curl 'https://grocery-deals-one.vercel.app/api/deals/match?item=hot%20dog%20buns&scope=related'
+```
+
+Responses contain `query`, `interpretation` (concept IDs and scope), `status`, `sources`, `matches`, and `warnings`. Match `ref` is the canonical offer ID (usable with `/api/deals?id=...`), not an agent-index reference. Match evidence includes `tier`, `kind`, `matchedTerms`, and `ambiguous`; always retain warnings when presenting a result. Generic buns may qualify for hot dog buns with a variety warning. Generic chicken does not qualify for chicken thighs. An unknown concept still supports whole-token title matching. Category or brand alone cannot produce a match.
+
+Handle outcomes explicitly:
+
+- HTTP 200, `ok`: at least one candidate, with all sources available and fresh. This is not a guarantee that a particular variety or size qualifies; inspect each match's warnings.
+- HTTP 200, `no_matches`: no clear match in the available, fresh snapshots. Do not claim no deal exists anywhere.
+- HTTP 200, `degraded`: stale, missing, invalid, or fallback source data; available candidates are retained. Explain the coverage limitation even when matches are empty.
+- HTTP 503, `degraded`: no usable source snapshot; say the check could not be completed. Other HTTP failures are errors, not empty searches.
+
+Each source includes its actual store/source scope, `latestSourceUpdate`, `stale`, `state` (`available`, `fallback`, or `unavailable`), and warnings. Freshness uses acquisition timestamps (or the source update timestamp for legacy Publix snapshots); more than 26 hours or an unknown timestamp is stale. An empty but valid, freshly timestamped source is healthy. Blob failures may use same-source bundled data with an explicit fallback warning. The match endpoint never uses the Publix example fixture. Costco warehouse-savings and Whole Foods all-deals sources do not imply location-specific pricing.
+
+Display text is cleaned, while `promotion.text` preserves the canonical promotion text. Pricing includes both price `basis` and `discountBasis`; promotion quantities, minimum spend, coupons, description, fine print, size/variant wording, and availability remain available. Dedicated `size` is null unless explicitly known. Prime prices appear only in `membership` with `memberOnly: true`, never in the ordinary sale price. An undated Costco offer has `validity.noPublishedEndDate: true` and `validity.text: "Current listing"`; that does not imply its source is fresh.
+
+Clients may use these results in their own Google Tasks workflow; Pantry Signal never writes to Google Tasks. `/api/deals` remains the dashboard endpoint and defaults to 50 results when `limit` is omitted. This endpoint does not claim `retrievalComplete` or depend on the optional agent-index repair.
+
+Known separate follow-up: profile routes currently lack authentication, and list/agent shared-secret checks fail open if no secret is configured. The public match endpoint does not change those existing behaviors.

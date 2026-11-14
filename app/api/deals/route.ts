@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 const retailerValues = new Set(["publix", "costco", "wholefoods"]);
 
 function pageLimit(value: string | null): number {
+  if (value === null) return 50;
   const parsed = Number(value);
   return Number.isInteger(parsed) ? Math.min(Math.max(parsed, 1), 100) : 50;
 }
