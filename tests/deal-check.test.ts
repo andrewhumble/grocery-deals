@@ -18,7 +18,7 @@ test("exact matches preserve specificity, aliases, modifiers and qualifier bound
   const eggs = matchDealOffers("eggs", offers, "exact", now).matches;
   assert.equal(eggs[0].ref, "publix:719:eggs");
   assert.ok(!eggs.some(m => m.ref.endsWith("condiment")));
-  assert.ok(eggs.find(m => m.ref.endsWith("dye"))?.match.ambiguous);
+  assert.ok(!eggs.some(m => m.ref.endsWith("dye")));
   assert.equal(matchDealOffers("chicken thighs", offers, "exact", now).matches.length, 0);
   const base = offers[0];
   const thighs = { ...base, id: "thighs", title: "Just Bare Bone-In Skin-On Chicken Thighs", category: "Meat & poultry" };
@@ -35,6 +35,34 @@ test("exact matches preserve specificity, aliases, modifiers and qualifier bound
   const sandwich = { ...base, id: "sandwich", title: "Sandwich Rolls" };
   assert.equal(matchDealOffers("hot dog buns", [sandwich], "exact", now).matches.length, 0);
   assert.equal(matchDealOffers("hot dog buns", [sandwich], "substitutes", now).matches[0].match.kind, "substitute");
+});
+
+test("food matching excludes pet food and generic nonfood rolls", async () => {
+  const base = (await catalog()).offers[0];
+  const make = (id: string, title: string, category: string) => ({ ...base, id, title, category, department: category, sourceCategories: [category] });
+  const offers = [make("salmon", "Fresh Salmon Fillets", "Seafood"), make("cat", "Salmon Cat Food", "Pets"),
+    make("paper", "Paper Towels Rolls", "Household"), make("rollon", "Roll-On Deodorant", "Health & personal care"),
+    make("dogs", "Hot Dogs", "Meat & poultry"), make("buns", "Hot Dog Buns", "Bakery"), make("rolls", "Bakery Rolls", "Bakery")];
+  assert.deepEqual(matchDealOffers("salmon", offers, "exact", now).matches.map(m => m.ref), ["salmon"]);
+  assert.deepEqual(matchDealOffers("hot dog buns", offers, "exact", now).matches.map(m => m.ref), ["buns", "rolls"]);
+});
+
+test("Publix base product IDs remain usable without offer IDs", async () => {
+  const raw = { storeId: "719", retrievedAt: fixture.now, products: [{ baseProductId: "base-123", title: "Fresh Salmon", savingType: "Tpr", finalPrice: 5, savings: "$1" }] };
+  const data = await loadDealCheckCatalog("719", { now, useBlob: true, reader: async (pathname, origin) => {
+    if (pathname.includes("publix")) { assert.equal(origin, "blob"); return raw; }
+    return reader(pathname, origin);
+  } });
+  assert.equal(data.sources[0].state, "available");
+  assert.ok(data.offers.some(o => o.id === "publix:719:product:base-123"));
+});
+
+test("stale source offers are never presented as current matches", async () => {
+  const data = await catalog();
+  data.sources[0].stale = true;
+  const result = checkDeals("eggs", data, "exact", now);
+  assert.equal(result.status, "degraded");
+  assert.ok(result.matches.every(m => m.retailer !== "publix"));
 });
 
 test("whole tokens, display cleaning, active dates and deterministic ordering", async () => {
@@ -64,8 +92,8 @@ test("ranking uses title tiers, department fit, discounts and stable ties", asyn
     make("low", "Chicken Thighs", 10),
     make("high", "Chicken Thighs", 50),
   ];
-  assert.deepEqual(matchDealOffers("chicken thighs", offers, "exact", now).matches.map(m => m.ref), ["high", "low", "pets", "tokens"]);
-  assert.deepEqual(matchDealOffers("chicken thighs", [...offers].reverse(), "exact", now).matches.map(m => m.ref), ["high", "low", "pets", "tokens"]);
+  assert.deepEqual(matchDealOffers("chicken thighs", offers, "exact", now).matches.map(m => m.ref), ["high", "low", "tokens"]);
+  assert.deepEqual(matchDealOffers("chicken thighs", [...offers].reverse(), "exact", now).matches.map(m => m.ref), ["high", "low", "tokens"]);
 });
 
 test("response preserves promotion, membership, variant details and undated Costco context", async () => {

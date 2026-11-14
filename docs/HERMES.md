@@ -73,7 +73,7 @@ Handle outcomes explicitly:
 
 - HTTP 200, `ok`: at least one candidate, with all sources available and fresh. This is not a guarantee that a particular variety or size qualifies; inspect each match's warnings.
 - HTTP 200, `no_matches`: no clear match in the available, fresh snapshots. Do not claim no deal exists anywhere.
-- HTTP 200, `degraded`: stale, missing, invalid, or fallback source data; available candidates are retained. Explain the coverage limitation even when matches are empty.
+- HTTP 200, `degraded`: stale, missing, invalid, or fallback source data; fresh-source candidates are retained; stale-source offers are omitted. Explain the coverage limitation even when matches are empty.
 - HTTP 503, `degraded`: no usable source snapshot; say the check could not be completed. Other HTTP failures are errors, not empty searches.
 
 Each source includes its actual store/source scope, `latestSourceUpdate`, `stale`, `state` (`available`, `fallback`, or `unavailable`), and warnings. Freshness uses acquisition timestamps (or the source update timestamp for legacy Publix snapshots); more than 26 hours or an unknown timestamp is stale. An empty but valid, freshly timestamped source is healthy. Blob failures may use same-source bundled data with an explicit fallback warning. The match endpoint never uses the Publix example fixture. Costco warehouse-savings and Whole Foods all-deals sources do not imply location-specific pricing.

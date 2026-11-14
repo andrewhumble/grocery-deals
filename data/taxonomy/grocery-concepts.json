@@ -61,5 +61,12 @@
     "substitutes": [],
     "related": [],
     "domains": ["Meat & poultry"]
+  },
+  "salmon": {
+    "labels": ["salmon"],
+    "parents": [],
+    "substitutes": [],
+    "related": [],
+    "domains": ["Seafood"]
   }
 }

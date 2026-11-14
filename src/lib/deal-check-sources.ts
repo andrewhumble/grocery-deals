@@ -43,7 +43,10 @@ function normalize(raw: unknown, retailer: Retailer, store: string) {
     if (!Array.isArray(data.deals)) throw new Error("Invalid Whole Foods snapshot");
     offers = normalizeWholeFoodsResponse(raw as Parameters<typeof normalizeWholeFoodsResponse>[0]);
   }
-  if (offers.some(o => !o.title || !o.source.offerId)) throw new Error("Invalid offer identity");
+  // A product may have a stable baseProductId but no source offerId. The
+  // normalizer uses that base ID for its canonical ID; one incomplete record
+  // must not invalidate the entire current snapshot.
+  offers = offers.filter(o => o.title && o.id && !o.id.endsWith(":undefined") && !o.id.endsWith(":null"));
   const milliseconds = typeof timestamp === "string" ? Date.parse(timestamp) : NaN;
   return { offers, timestamp: Number.isFinite(milliseconds) ? new Date(milliseconds).toISOString() : null };
 }

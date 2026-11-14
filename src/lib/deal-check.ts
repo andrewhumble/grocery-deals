@@ -42,6 +42,9 @@ export function matchDealOffers(item: string, offers: Offer[], scope: SearchScop
     const [name, ...qualifiers] = title.split(/,|\s+[-–—]\s+|[–—]/);
     const words = itemTokens(name);
     const warnings: string[] = [];
+    const categoryText = itemTokens([offer.category, offer.department, ...offer.sourceCategories].join(" "));
+    const nonFood = /\b(pet|pets|household|cleaning|health|beauty|personal care|paper|automotive)\b/i.test(categoryText.join(" ")) || /\b(cat|dog)\s+(food|treat|treats)\b/i.test(title);
+    if (domains.length && nonFood) return [];
     let tier: Tier | null = null;
     let kind: MatchKind = "exact";
     let matchedTerms = terms;
@@ -50,7 +53,7 @@ export function matchDealOffers(item: string, offers: Offer[], scope: SearchScop
     else if (modifiers.every(t => words.includes(t))) {
       const label = labelWords.find(label => phrase(words, label));
       if (label) { tier = "concept_label"; matchedTerms = label; }
-      else if (ids.includes("hot_dog_bun") && concepts.bun.labels.some(l => phrase(words, itemTokens(l))) && !words.some(w => ["hamburger", "burger", "slider", "dinner", "cinnamon", "sweet", "sandwich"].includes(w))) {
+      else if (ids.includes("hot_dog_bun") && offer.category === "Bakery" && !/\broll[ -]on\b/i.test(name) && concepts.bun.labels.some(l => phrase(words, itemTokens(l))) && !words.some(w => ["hamburger", "burger", "slider", "dinner", "cinnamon", "sweet", "sandwich", "paper"].includes(w))) {
         tier = "concept_label";
         matchedTerms = words.filter(w => ["bun", "roll"].includes(w));
         warnings.push("Generic bun or roll offer: verify that hot dog varieties are eligible.");
@@ -71,7 +74,6 @@ export function matchDealOffers(item: string, offers: Offer[], scope: SearchScop
     }
     if (!tier) return [];
     if (kind !== "exact") warnings.push(`This is a ${kind} offer, not an exact item match.`);
-    const categoryText = itemTokens([offer.category, offer.department, ...offer.sourceCategories].join(" "));
     const fit = domains.some(d => itemTokens(d).some(w => categoryText.includes(w))) ? 1 : 0;
     const conflict = domains.length > 0 && /\b(pet|pets|household|cleaning|candy)\b/i.test(categoryText.join(" "));
     if (conflict || (domains.length > 0 && !fit)) warnings.push("Department differs from the requested item; verify product identity.");
@@ -103,7 +105,8 @@ export function matchDealOffers(item: string, offers: Offer[], scope: SearchScop
 }
 
 export function checkDeals(item: string, catalog: CheckCatalog, scope: SearchScope = "exact", now = new Date()) {
-  const result = matchDealOffers(item, catalog.offers, scope, now);
+  const usable = new Set(catalog.sources.filter(source => !source.stale && source.state !== "unavailable").map(source => source.retailer));
+  const result = matchDealOffers(item, catalog.offers.filter(offer => usable.has(offer.retailer)), scope, now);
   const degraded = catalog.sources.some(s => s.stale || s.state !== "available");
   const status: "ok" | "no_matches" | "degraded" = degraded ? "degraded" : result.matches.length ? "ok" : "no_matches";
   return { query: item, ...result, status,
